@@ -2,6 +2,7 @@ package com.news.service;
 
 import java.sql.SQLException;
 
+import com.news.dao.UserDAO;
 import com.news.model.User;
 
 public class AuthService {
