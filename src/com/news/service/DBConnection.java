@@ -1,22 +1,25 @@
 package com.news.service;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.util.Properties;
 
 public class DBConnection {
-    private static Connection connection;
+    public static Connection getConnection() {
+        Properties props = new Properties();
+        try (FileInputStream fis = new FileInputStream("db.properties")) {
+            props.load(fis);
+            String url = props.getProperty("db.url");
+            String user = props.getProperty("db.username");
+            String pass = props.getProperty("db.password");
 
-    private static final String URL = "jdbc:mysql://localhost:3306/newsdb"; 
-    private static final String USER = "root";
-    private static final String PASSWORD = "MySQL@123";
+            return DriverManager.getConnection(url, user, pass);
 
-    private DBConnection() {}
-
-    public static Connection getConnection() throws SQLException {
-        if (connection == null || connection.isClosed()) {
-            connection = DriverManager.getConnection(URL, USER, PASSWORD);
+        } catch (IOException | java.sql.SQLException e) {
+            e.printStackTrace();
+            return null;
         }
-        return connection;
     }
 }

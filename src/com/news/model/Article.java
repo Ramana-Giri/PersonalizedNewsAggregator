@@ -43,7 +43,7 @@ public class Article {
 
     @Override
     public String toString() {
-        return "Title: " + title + " | Author: " + author + " | Category: " + category +
-                "\nContent: " + content;
+        return "Title: " + title + " \nBy " + author + "\nCategory: " + category +
+                "\n" + content;
     }
 }

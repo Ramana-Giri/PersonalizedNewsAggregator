@@ -1,18 +1,20 @@
 package com.news.app;
 
+import com.news.dao.UserDAOImpl;
+import com.news.dao.UserDAO;
 import com.news.model.User;
 import com.news.model.Article;
-import com.news.dao.UserDAO;
-import com.news.dao.ArticleDAO;
+import com.news.dao.ArticleDAOImpl;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Scanner;
 
 public class App {
+
     public static void main(String[] args) throws SQLException {
         Scanner scanner = new Scanner(System.in);
-        UserDAO userDAO = new UserDAO();
-        ArticleDAO articleDAO = new ArticleDAO();
+        UserDAO userDAO = new UserDAOImpl();  // use interface
+        ArticleDAOImpl articleDAO = new ArticleDAOImpl();
 
         String[] roles = {"Admin", "Editor", "Reader"};
 
@@ -34,9 +36,10 @@ public class App {
                 System.out.print("Enter password: ");
                 String password = scanner.nextLine();
 
-                User user = userDAO.getUserByUsername(username);
+                boolean validLogin = userDAO.validateUser(username, password);
 
-                if (user != null && user.getPassword().equals(password)) {
+                if (validLogin) {
+                    User user = userDAO.getUserByUsername(username);
                     System.out.println("✅ Login successful");
 
                     // 🎯 Role-based actions
@@ -54,8 +57,6 @@ public class App {
                             System.out.println("⚠️ Unknown role.");
                     }
 
-                } else {
-                    System.out.println("❌ Invalid username or password.");
                 }
 
             } else if (choice == 2) {
@@ -96,7 +97,7 @@ public class App {
     }
 
     // 🔹 Admin Menu
-    private static void adminMenu(String author, Scanner scanner, ArticleDAO articleDAO) throws SQLException {
+    private static void adminMenu(String author, Scanner scanner, ArticleDAOImpl articleDAO) {
         while (true) {
             System.out.println("\n=== Admin Menu ===");
             System.out.println("1. Add Article");
@@ -118,7 +119,6 @@ public class App {
 
                 Article article = new Article(0, title, content, author, category);
                 articleDAO.addArticle(article);
-                System.out.println("✅ Article added successfully!");
             } else if (choice == 2) {
                 List<Article> articles = articleDAO.getAllArticles();
                 for (Article a : articles) {
@@ -126,7 +126,7 @@ public class App {
                 }
             } else if (choice == 3) {
                 System.out.println("👋 Logging out...");
-                break; // exit menu loop, go back to login/signup
+                break;
             } else {
                 System.out.println("⚠️ Invalid choice, try again.");
             }
@@ -134,7 +134,7 @@ public class App {
     }
 
     // 🔹 Editor Menu
-    private static void editorMenu(String author, Scanner scanner, ArticleDAO articleDAO) throws SQLException {
+    private static void editorMenu(String author, Scanner scanner, ArticleDAOImpl articleDAO) {
         while (true) {
             System.out.println("\n=== Editor Menu ===");
             System.out.println("1. Add Article");
@@ -155,7 +155,7 @@ public class App {
 
                 Article article = new Article(0, title, content, author, category);
                 articleDAO.addArticle(article);
-                System.out.println("✅ Article added successfully!");
+
             } else if (choice == 2) {
                 System.out.println("👋 Logging out...");
                 break;
@@ -166,7 +166,7 @@ public class App {
     }
 
     // 🔹 Reader Menu
-    private static void readerMenu(Scanner scanner, ArticleDAO articleDAO) throws SQLException {
+    private static void readerMenu(Scanner scanner, ArticleDAOImpl articleDAO) {
         while (true) {
             System.out.println("\n=== Reader Menu ===");
             System.out.println("1. View All Articles");

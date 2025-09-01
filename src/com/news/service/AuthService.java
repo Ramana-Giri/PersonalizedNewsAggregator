@@ -3,13 +3,14 @@ package com.news.service;
 import java.sql.SQLException;
 
 import com.news.dao.UserDAO;
+import com.news.dao.UserDAOImpl;
 import com.news.model.User;
 
 public class AuthService {
     private UserDAO userDAO;
 
     public AuthService() throws SQLException {
-        this.userDAO = new UserDAO();
+        this.userDAO = new UserDAOImpl();
     }
 
     public User login(String username, String password) {
